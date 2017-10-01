@@ -1,0 +1,10 @@
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\bin\Debug\netcoreapp2.0\aggregator.deps.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\bin\Debug\netcoreapp2.0\aggregator.runtimeconfig.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\bin\Debug\netcoreapp2.0\aggregator.runtimeconfig.dev.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\bin\Debug\netcoreapp2.0\aggregator.dll
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\bin\Debug\netcoreapp2.0\aggregator.pdb
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\obj\Debug\netcoreapp2.0\aggregator.csproj.CoreCompileInputs.cache
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\obj\Debug\netcoreapp2.0\aggregator.AssemblyInfoInputs.cache
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\obj\Debug\netcoreapp2.0\aggregator.AssemblyInfo.cs
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\obj\Debug\netcoreapp2.0\aggregator.dll
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator\obj\Debug\netcoreapp2.0\aggregator.pdb
