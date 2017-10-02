@@ -1,0 +1,10 @@
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\obj\Debug\netcoreapp2.0\temperature.csproj.CoreCompileInputs.cache
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\obj\Debug\netcoreapp2.0\temperature.AssemblyInfoInputs.cache
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\obj\Debug\netcoreapp2.0\temperature.AssemblyInfo.cs
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\bin\Debug\netcoreapp2.0\temperature.deps.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\bin\Debug\netcoreapp2.0\temperature.runtimeconfig.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\bin\Debug\netcoreapp2.0\temperature.runtimeconfig.dev.json
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\bin\Debug\netcoreapp2.0\temperature.dll
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\bin\Debug\netcoreapp2.0\temperature.pdb
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\obj\Debug\netcoreapp2.0\temperature.dll
+F:\My Work\Projects\ASP.Net Core\lotAggregator\temperature\obj\Debug\netcoreapp2.0\temperature.pdb

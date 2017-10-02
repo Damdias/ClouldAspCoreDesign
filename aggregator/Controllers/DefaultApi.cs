@@ -9,21 +9,16 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using aggregator.Models;
 using Microsoft.Extensions.Logging;
-
+using ServiceClients;
+using Microsoft.Rest;
+using Polly;
 namespace aggregator.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -31,10 +26,12 @@ namespace aggregator.Controllers
     { 
         private readonly IStore store;
         private readonly ILogger logger;
-        public DefaultApiController(IStore store, ILogger<DefaultApiController> logger)
+         private readonly ITemperatureHistorian historian;
+        public DefaultApiController(IStore store, ILogger<DefaultApiController> logger,ITemperatureHistorian historian)
         {
             this.store = store;
             this.logger = logger;
+             this.historian = historian;
         }
 
         /// <summary>
@@ -54,19 +51,43 @@ namespace aggregator.Controllers
         [SwaggerResponse(201, type: typeof(float?))]
         public virtual IActionResult AddDeviceData([FromRoute]string deviceType, [FromRoute]string deviceId, [FromQuery]string dataPointIda, [FromQuery]float? value)
         { 
-            var key = $"{deviceId}; {dataPointIda}";
+        
+            if (!deviceType.Equals("TEMP"))
+         {
+             this.logger.LogError($"Device type {deviceType} is not supported.");
+             return BadRequest($"Unsupported device type {deviceType}");
+         }
+         float? averageValue = default(float?);
 
-            if(!this.store.Exists(key) && value.HasValue){
-                this.store.Add(key,value.Value);
-                this.logger.LogInformation($"Added {value.Value} for {key} to the store");
-            }
-            if(!value.HasValue){
-                this.logger.LogError($"No value found for {key}");
-                return BadRequest($"No data value for device: {deviceId} and datapoint {dataPointIda}");
-            }
-            var average  = this.store.GetAll().Where(i => i.Key.StartsWith(deviceId)).Average(v => v.Value);
-            this.logger.LogInformation($"Returning {average}");
-            return Created("",average);
+         var retryPolicy = Policy
+             .Handle<HttpOperationException>()
+             .WaitAndRetry(5, retryAttempt =>
+                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+             );
+
+         averageValue = retryPolicy.Execute(() =>
+            this.historian.AddDeviceData(deviceId, dataPointIda, DateTimeOffset.UtcNow.DateTime,value));
+
+         if (!averageValue.HasValue)
+         {
+             var message = $"Cannot calculate the average.";
+             this.logger.LogError(message);
+             return BadRequest(message);
+         }
+
+         var key = $"{deviceType};{deviceId}";
+         if (this.store.Exists(key))
+         {
+             this.logger.LogInformation($"Updating {key} with {averageValue.Value}");
+             this.store.Update(key, averageValue.Value);
+         }
+         else
+         {
+             this.logger.LogInformation($"Added {key} with {averageValue.Value}");
+             this.store.Add(key, averageValue.Value);
+         }
+
+         return Ok(averageValue.Value);
         }
 
 

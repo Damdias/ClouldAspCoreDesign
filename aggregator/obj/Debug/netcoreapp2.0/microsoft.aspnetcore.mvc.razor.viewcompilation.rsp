@@ -1,0 +1,5 @@
+F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator
+--output-path=obj\Debug\netcoreapp2.0\
+--application-name=aggregator
+--content-root=F:\My Work\Projects\ASP.Net Core\lotAggregator\aggregator
+--file=
