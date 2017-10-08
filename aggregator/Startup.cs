@@ -28,17 +28,20 @@ namespace aggregator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-            .AddJsonOptions(opts => {
+            .AddJsonOptions(opts =>
+            {
                 opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            services.AddSwaggerGen(c=> {
-                c.SwaggerDoc("v1",new Info{Title ="API V1", Version="v1"});
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "API V1", Version = "v1" });
             });
+            var hostUri = Configuration["TEMPHISTORIAN"] ?? "http://172.17.0.2:5000";
 
             services.AddSingleton<IStore>(new Store());
-            services.AddTransient<ITemperatureHistorian>( 
-         (s) => new TemperatureHistorian(new Uri(Configuration["TEMPHISTORIAN"])));
+            Console.WriteLine("Host derver Uri " + hostUri);
+            services.AddTransient<ITemperatureHistorian>((s) => new TemperatureHistorian(new Uri(hostUri))); //
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,14 +54,15 @@ namespace aggregator
             {
                 app.UseDeveloperExceptionPage();
             }
-             app.UseMvc();
+            app.UseMvc();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json","V1 Docs");
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
             });
-           
+
         }
     }
 }

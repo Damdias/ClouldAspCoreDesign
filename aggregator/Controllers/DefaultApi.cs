@@ -23,15 +23,15 @@ namespace aggregator.Controllers
     /// 
     /// </summary>
     public class DefaultApiController : Controller
-    { 
+    {
         private readonly IStore store;
         private readonly ILogger logger;
-         private readonly ITemperatureHistorian historian;
-        public DefaultApiController(IStore store, ILogger<DefaultApiController> logger,ITemperatureHistorian historian)
+        private readonly ITemperatureHistorian historian;
+        public DefaultApiController(IStore store, ILogger<DefaultApiController> logger, ITemperatureHistorian historian)
         {
             this.store = store;
             this.logger = logger;
-             this.historian = historian;
+            this.historian = historian;
         }
 
         /// <summary>
@@ -50,44 +50,44 @@ namespace aggregator.Controllers
         [SwaggerOperation("AddDeviceData")]
         [SwaggerResponse(201, type: typeof(float?))]
         public virtual IActionResult AddDeviceData([FromRoute]string deviceType, [FromRoute]string deviceId, [FromQuery]string dataPointIda, [FromQuery]float? value)
-        { 
-        
+        {
+
             if (!deviceType.Equals("TEMP"))
-         {
-             this.logger.LogError($"Device type {deviceType} is not supported.");
-             return BadRequest($"Unsupported device type {deviceType}");
-         }
-         float? averageValue = default(float?);
+            {
+                this.logger.LogError($"Device type {deviceType} is not supported.");
+                return BadRequest($"Unsupported device type {deviceType}");
+            }
+            double? averageValue = default(double?);
+            Console.WriteLine($"device Type{deviceType} deviceId {deviceId} dataPointda{dataPointIda} value {value}");
+            var retryPolicy = Policy
+                .Handle<HttpOperationException>()
+                .WaitAndRetry(5, retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                );
 
-         var retryPolicy = Policy
-             .Handle<HttpOperationException>()
-             .WaitAndRetry(5, retryAttempt =>
-                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-             );
+            averageValue = retryPolicy.Execute(() =>
+               this.historian.AddDeviceData(deviceId, dataPointIda, DateTimeOffset.UtcNow.DateTime, value));
 
-         averageValue = retryPolicy.Execute(() =>
-            this.historian.AddDeviceData(deviceId, dataPointIda, DateTimeOffset.UtcNow.DateTime,value));
+            if (!averageValue.HasValue)
+            {
+                var message = $"Cannot calculate the average.";
+                this.logger.LogError(message);
+                return BadRequest(message);
+            }
 
-         if (!averageValue.HasValue)
-         {
-             var message = $"Cannot calculate the average.";
-             this.logger.LogError(message);
-             return BadRequest(message);
-         }
+            var key = $"{deviceType};{deviceId}";
+            if (this.store.Exists(key))
+            {
+                this.logger.LogInformation($"Updating {key} with {averageValue.Value}");
+                this.store.Update(key, (float)averageValue.Value);
+            }
+            else
+            {
+                this.logger.LogInformation($"Added {key} with {averageValue.Value}");
+                this.store.Add(key, (float)averageValue.Value);
+            }
 
-         var key = $"{deviceType};{deviceId}";
-         if (this.store.Exists(key))
-         {
-             this.logger.LogInformation($"Updating {key} with {averageValue.Value}");
-             this.store.Update(key, averageValue.Value);
-         }
-         else
-         {
-             this.logger.LogInformation($"Added {key} with {averageValue.Value}");
-             this.store.Add(key, averageValue.Value);
-         }
-
-         return Ok(averageValue.Value);
+            return Ok(averageValue.Value);
         }
 
 
@@ -106,9 +106,9 @@ namespace aggregator.Controllers
         [SwaggerOperation("AverageByDeviceTypeDeviceTypeGet")]
         [SwaggerResponse(200, type: typeof(DeviceDataPoints))]
         public virtual IActionResult AverageByDeviceTypeDeviceTypeGet([FromRoute]string deviceType, [FromQuery]DateTime? fromTime, [FromQuery]DateTime? toTime)
-        { 
+        {
             string exampleJson = null;
-            
+
             var example = exampleJson != null
             ? JsonConvert.DeserializeObject<DeviceDataPoints>(exampleJson)
             : default(DeviceDataPoints);

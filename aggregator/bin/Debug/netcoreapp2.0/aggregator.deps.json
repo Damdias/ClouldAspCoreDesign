@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "a2b84868c84f871151929c650ed37f1a1b94e8fc"
+    "signature": "5c491b451f44a9b30665d8f5611e2bcc6b5777cb"
   },
   "compilationOptions": {
     "defines": [
@@ -26,6 +26,7 @@
           "Microsoft.AspNetCore.All": "2.0.0",
           "Microsoft.AspNetCore.StaticFiles": "2.0.0",
           "Microsoft.NETCore.App": "2.0.0",
+          "Polly": "5.3.1",
           "Swashbuckle.AspNetCore": "1.0.0",
           "Swashbuckle.AspNetCore.Swagger": "1.0.0"
         },
@@ -2366,6 +2367,17 @@
         },
         "compile": {
           "lib/netstandard1.3/Newtonsoft.Json.Bson.dll": {}
+        }
+      },
+      "Polly/5.3.1": {
+        "dependencies": {
+          "NETStandard.Library": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard1.1/Polly.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.1/Polly.dll": {}
         }
       },
       "Remotion.Linq/2.1.1": {
@@ -5187,6 +5199,13 @@
       "sha512": "sha512-5PYT/IqQ+UK31AmZiSS102R6EsTo+LGTSI8bp7WAUqDKaF4wHXD8U9u4WxTI1vc64tYi++8p3dk3WWNqPFgldw==",
       "path": "newtonsoft.json.bson/1.0.1",
       "hashPath": "newtonsoft.json.bson.1.0.1.nupkg.sha512"
+    },
+    "Polly/5.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vEAUy16SgCevG0w7POAwQ4jVJ7HFEKibuzORrqg1L8pIpfgFjJbScxHE0BU1CbkRS/tTxshEe0dzDS53oJCLiQ==",
+      "path": "polly/5.3.1",
+      "hashPath": "polly.5.3.1.nupkg.sha512"
     },
     "Remotion.Linq/2.1.1": {
       "type": "package",
